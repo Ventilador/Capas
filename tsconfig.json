@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        "preserveConstEnums": true,
+        "removeComments": false,
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "noEmitOnError": true,
+        "declaration": false,
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "forceConsistentCasingInFileNames": true
+    },
+    "awesomeTypescriptLoaderOptions": {
+        "useWebpackText": true,
+        "useCache": true,
+        "cacheDirectory": ".buildCache/awcache",
+        "forceIsolatedModules": true
+    },
+    "exclude": [
+        "node_modules",
+        "build",
+        "compilation"
+    ],
+    "filesGlob": [
+        "src/**/*.ts"
+    ]
+}
