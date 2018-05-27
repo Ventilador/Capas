@@ -2,23 +2,25 @@ import { exists, readDir, readFile, stats } from './things/functions';
 import { resolve } from 'path';
 
 function findInFiles(dir: string, content: string) {
-    return finder(dir, content.toLowerCase(), []);
+    return finder(dir, content.toLowerCase());
 }
 
-async function finder(path: string, content: string, founds: string[]) {
+async function finder(path: string, content: string) {
     const stat = await stats(path);
     if (stat.isFile()) {
         const text = await readFile(path);
-        if (text.toLowerCase().indexOf(content) !== -1) {
-            founds.push(path);
+        if (text.includes(content)) {
+            return [path];
         }
     } else {
         const dirContent = await readDir(path);
+        let toReturn = [];
         await dirContent.forEach(async function (cur) {
-            return await finder(cur, content, founds);
+            toReturn = toReturn.concat(await finder(cur, content));
         });
+        return toReturn;
     }
-    return founds;
+    return [];
 }
 
 function contains(context: string, toFind: string) {

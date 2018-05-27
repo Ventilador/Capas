@@ -5,22 +5,10 @@ import { promisify } from './../../utils/promisify';
 import { valueFn } from '../../utils/valueFn';
 import { stats } from '.';
 export function readDir(dir: string) {
-    return stats(dir)
-        .then(ensureDir)
-        .then(valueFn(dir))
-        .then(read)
+    return promisify(readdir, dir)
         .then(resolveTo(dir));
 }
 
-function read(dir) {
-    return promisify(readdir, dir);
-}
-
-function ensureDir(stat) {
-    if (stat.isFile()) {
-        throw new Error('Is a file');
-    }
-}
 
 function resolveTo(dir) {
     return function (list: string[]) {

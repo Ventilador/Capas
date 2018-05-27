@@ -1,0 +1,6 @@
+{
+    "files.watcherExclude": {
+        "files": true, // this is a default value
+        "node_modules": true // this excludes the folder 
+    }
+}

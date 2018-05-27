@@ -2,20 +2,31 @@ import { WriteStream, createWriteStream } from "fs";
 
 export class Writer {
     private stream: WriteStream;
-    constructor(fileName: string) {
+    private res;
+    private rej;
+    constructor(private fileName: string) {
         this.stream = createWriteStream(fileName, 'utf-8');
     }
     write(text: string) {
         this.stream.write(text);
     }
-    done() {
-        const stream = this.stream;
+    start() {
+        if (!this.res || !this.rej) {
+            throw 'Promise not initialized';
+        }
+        this.stream = createWriteStream(this.fileName, 'utf-8');
+        this.stream
+            .once('finish', this.res)
+            .once('error', this.rej);
+    }
+    end() {
+        this.stream.end();
         this.stream = null;
+    }
+    done() {
         return new Promise((res, rej) => {
-            stream
-                .once('finish', res)
-                .once('error', rej);
-            stream.end();
+            this.res = res;
+            this.rej = rej;
         });
     }
 }
