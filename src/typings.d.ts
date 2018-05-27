@@ -1,12 +1,12 @@
 declare namespace Pages {
     export interface IPageConfig {
-        template: string;
-        controller: any;
-        data: any;
-        controllerAs: string;
+        state: string;
+        displayName: string
     }
-    export interface IRegistry {
-        emit(depth: number, newConfig: IPageConfig);
-        subscribe(scope: ng.IScope, depth: number, render: (config: IPageConfig) => void): void;
-    }
+
+}
+
+interface Dictionary<T> {
+    [key: string]: T;
+    [key: number]: T;
 }

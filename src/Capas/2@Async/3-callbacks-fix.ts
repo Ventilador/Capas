@@ -7,7 +7,7 @@ printFileContentSecure(__filename);
 function printFileContentSecure(fileName: string) {
     readFile(fileName, function (err: Error, content: string) {
         if (err) {
-
+            console.error(':(');
             process.exit(1);
         }
         console.log(content);

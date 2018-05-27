@@ -1,0 +1,16 @@
+<div>
+    <div class="inline-flex">
+        <label for="regular">Regular</label>
+        <input type="radio" name="regular" ng-value="true" ng-model="ctrl.mode">
+        <label for="D3">D3</label>
+        <input type="radio" name="D3" ng-value="false" ng-model="ctrl.mode">
+    </div>
+    <div ng-switch="ctrl.mode">
+        <div ng-switch-when="true">
+            <div regular-mode="ctrl.data"></div>
+        </div>
+        <div ng-switch-when="false">
+            <div d3-mode="ctrl.data"></div>
+        </div>
+    </div>
+</div>

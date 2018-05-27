@@ -3,8 +3,9 @@ import { readdir } from 'fs';
 import { resolve } from 'path';
 import { promisify } from './../../utils/promisify';
 import { valueFn } from '../../utils/valueFn';
+import { stats } from '.';
 export function readDir(dir: string) {
-    return exists(dir)
+    return stats(dir)
         .then(ensureDir)
         .then(valueFn(dir))
         .then(read)

@@ -14,9 +14,9 @@ async function finder(path: string, content: string, founds: string[]) {
         }
     } else {
         const dirContent = await readDir(path);
-        await dirContent.forEach(async function (cur) {
-            return await finder(cur, content, founds);
-        });
+        for (let i = 0; i < dirContent.length; i++) {
+            await finder(dirContent[i], content, founds);
+        }
     }
     return founds;
 }

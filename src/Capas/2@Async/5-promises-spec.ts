@@ -2,7 +2,6 @@ import 'jasmine';
 import 'jasmine-core';
 import { sleep } from './utils/Sleep';
 import { CustomPromise } from './utils/Promise';
-import { IPromises } from 'fs';
 // declare var Promise: typeof Node.Promise & {};
 interface Promise<T> {
     finally(onDone: () => void): Promise<T>;

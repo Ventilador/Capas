@@ -1,5 +1,5 @@
 <div class="menu-wrapper flex">
     <div ng-repeat="item in ctrl.menuItems" class="inline-flex menu-item justify-center link" ng-click="ctrl.goTo(item, $index)">
-        <div ng-bind="item.name"></div>
+        <div ng-bind="item.displayName"></div>
     </div>
 </div>

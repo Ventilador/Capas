@@ -6,8 +6,7 @@ angular.module('capas',
         'ng',
         require('./mw'),
         require('./menu'),
-        require('./pages'),
-        require('./1@async')
+        require('./Capas/2@Async/site')
     ])
     .run(function ($rootScope: ng.IRootScopeService) {
         console.log($rootScope);
