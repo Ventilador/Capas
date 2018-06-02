@@ -2,14 +2,14 @@ import { exists, readDir, readFile, stats } from './things/functions';
 import { resolve } from 'path';
 
 function findInFiles(dir: string, content: string) {
-    return finder(dir, content, []);
+    return finder(dir, content.toLowerCase(), []);
 }
 
 async function finder(path: string, content: string, founds: string[]) {
     const stat = await stats(path);
     if (stat.isFile()) {
         const text = await readFile(path);
-        if (text.includes(content)) {
+        if (text.toLowerCase().indexOf(content) !== -1) {
             founds.push(path);
         }
     } else {
