@@ -1,5 +1,5 @@
 import { exists, readDir, readFile, stats } from './things/functions';
-import { resolve } from 'path';
+import { resolve, basename } from 'path';
 
 function findInFiles(dir: string, content: string) {
     return finder(dir, content.toLowerCase());
@@ -15,9 +15,9 @@ async function finder(path: string, content: string) {
     } else {
         const dirContent = await readDir(path);
         let toReturn = [];
-        await dirContent.forEach(async function (cur) {
-            toReturn = toReturn.concat(await finder(cur, content));
-        });
+        for (let i = 0; i < dirContent.length; i++) {
+            toReturn = toReturn.concat(await finder(dirContent[i], content));
+        }
         return toReturn;
     }
     return [];
@@ -31,7 +31,10 @@ const dir = resolve(process.cwd(), 'files', process.argv[2]);
 const toFind = process.argv[3];
 findInFiles(dir, toFind)
     .then(matches => {
-        console.log('found:', matches);
+        console.log('found:', matches.slice(0, 10).map(_ => basename(_)), 'items');
+        if (matches.length > 10) {
+            console.log('There are', matches.length, 'results, showing 10');
+        }
         process.exit(0);
     }, err => {
         console.error(err);
