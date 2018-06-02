@@ -5,6 +5,9 @@ declare namespace Pages {
     }
 
 }
+declare var nextModule: () => string;
+
+
 
 interface Dictionary<T> {
     [key: string]: T;

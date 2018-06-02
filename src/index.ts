@@ -1,7 +1,11 @@
 require('angular');
 require('angular-animate');
 import './styles.less';
-angular.module('capas',
+let id = 0;
+Function('return this')().nextModule = function () {
+    return id++ + '';
+}
+angular.module(nextModule(),
     [
         'ng',
         require('./mw'),

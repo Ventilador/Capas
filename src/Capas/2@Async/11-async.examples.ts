@@ -7,8 +7,9 @@ function findInFiles(dir: string, content: string) {
 
 async function finder(path: string, content: string, founds: string[]) {
     const stat = await stats(path);
+    content = content.toLowerCase();
     if (stat.isFile()) {
-        const text = await readFile(path);
+        const text = (await readFile(path)).toLowerCase();
         if (text.includes(content)) {
             founds.push(path);
         }

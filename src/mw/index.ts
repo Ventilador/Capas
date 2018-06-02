@@ -1,6 +1,6 @@
 import { menuGetter } from './menu';
 import { resolvers } from './resolvers'
-export = angular.module('capas.mw', [])
+export = angular.module(nextModule(), [])
     .config(function ($provide: ng.auto.IProvideService) {
         const resolvers_ = resolvers(valueFn);
         $provide.factory('mw', function ($injector: ng.auto.IInjectorService) {

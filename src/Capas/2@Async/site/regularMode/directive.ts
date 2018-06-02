@@ -1,6 +1,5 @@
-import { Base } from "../classes/Base";
+import { MainScope } from "../classes/Base";
 import { valueFn } from "../../utils/valueFn";
-
 export function MainDirective() {
     return {
         controller: MainController,
@@ -13,16 +12,15 @@ export function MainDirective() {
 interface IItem {
     scope: any;
     elm: JQLite;
-    node: Base;
+    node: MainScope;
 }
 
-function MainController($scope: ng.IScope, $element: JQLite, $attrs: any, $animate: ng.animate.IAnimateService, $compile: ng.ICompileService, $q: ng.IQService) {
+function MainController($scope: ng.IScope, $element: JQLite, $attrs: any, $animate: ng.animate.IAnimateService, $compile: ng.ICompileService, $q: ng.IQService, mainScope: MainScope) {
     const scope = $scope;
     const elm = $element;
     const q = $q;
-    const config: Base = scope.$parent.$eval($attrs.regularMode);
     const list = scope['list'] = [] as IItem[];
-    let cur = config;
+    let cur = scope.$parent.$eval($attrs.regularMode) || mainScope;
     this.getCurrent = function () {
         return cur;
     }
@@ -30,12 +28,12 @@ function MainController($scope: ng.IScope, $element: JQLite, $attrs: any, $anima
     let toAppend, toRemove;
     function toParent() {
         let array = [];
-        if (cur.parent && cur.parent.parent) {
-            array = cur.parent.parent.getChildren();
+        if (cur.$parent && cur.$parent.$parent) {
+            array = cur.$parent.$parent.getChildren();
         } else {
             return array;
         }
-        cur = cur.parent;
+        cur = cur.$parent;
         array.forEach(appendElement);
     }
 
@@ -45,7 +43,6 @@ function MainController($scope: ng.IScope, $element: JQLite, $attrs: any, $anima
         list.forEach(processItem);
         q.resolve(toAppend)
             .then(doEnter)
-            .then(doUpdate)
             .then(valueFn(toRemove))
             .then(doRemove);
         toRemove = toAppend = null;
@@ -55,13 +52,8 @@ function MainController($scope: ng.IScope, $element: JQLite, $attrs: any, $anima
         return q.all(items.map(leave));
     }
 
-    function doUpdate() {
-        return q.all(list.map(update));
-    }
 
-    function update(item: IItem) {
-        return $animate.animate(item.elm, null, item.node.getStyles(cur));
-    }
+
 
 
 
@@ -98,7 +90,7 @@ function MainController($scope: ng.IScope, $element: JQLite, $attrs: any, $anima
         remove((<any>ev).targetScope.node);
     }
 
-    function remove(item: Base) {
+    function remove(item: MainScope) {
         const index = list.findIndex(byNode, item);
         if (index !== -1) {
             const listItem = list[index];
@@ -110,7 +102,7 @@ function MainController($scope: ng.IScope, $element: JQLite, $attrs: any, $anima
 
 
     function enableParent() {
-        return !!cur.parent;
+        return !!cur.$parent;
     }
 
     function appendElement(item) {
