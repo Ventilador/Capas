@@ -7,7 +7,10 @@ declare namespace Pages {
 }
 declare var nextModule: () => string;
 
-
+interface IPoint {
+    readonly x: number;
+    readonly y: number;
+}
 
 interface Dictionary<T> {
     [key: string]: T;

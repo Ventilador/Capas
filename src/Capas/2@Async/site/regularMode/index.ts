@@ -1,2 +1,2 @@
-export default angular.module('regularMode', [])
+export default angular.module(nextModule(), [])
     .name;
