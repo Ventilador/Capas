@@ -1,6 +1,8 @@
 import { exists, readDir, readFile, stats } from './things/functions';
 import { resolve, basename } from 'path';
-
+import defer from './utils/defer';
+import { put, concurrency } from './utils/exampleGenerator/fsQueue';
+concurrency(100);
 function findInFiles(dir: string, content: string) {
     return finder(dir, content.toLowerCase(), []);
 }
@@ -8,17 +10,23 @@ function findInFiles(dir: string, content: string) {
 async function finder(path: string, content: string, found: string[]) {
     const stat = await stats(path);
     if (stat.isFile()) {
-        const text = await readFile(path);
+        const text = await secureReadFile(path);
         if (text.includes(content)) {
             found.push(path);
         }
     } else {
         const dirContent = await readDir(path);
-        await Promise.all(dirContent.map(cur => {
-            return finder(cur, content, found);
-        }));
+        await Promise.all(dirContent.map(async cur => await finder(cur, content, found)));
     }
     return found;
+}
+
+function secureReadFile(path) {
+    const deferred = defer();
+    return put(function () {
+        return readFile(path)
+            .then(deferred.resolve, deferred.reject);
+    }, deferred.promise);
 }
 
 function contains(context: string, toFind: string) {

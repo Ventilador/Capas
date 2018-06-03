@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import { promisify } from './../../utils/promisify';
 import { valueFn } from '../../utils/valueFn';
 import { stats } from '.';
-export function readDir(dir: string) {
+export function readDir(dir: string): Promise<string[]> {
     return promisify(readdir, dir)
         .then(resolveTo(dir));
 }
