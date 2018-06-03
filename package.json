@@ -11,7 +11,8 @@
     "ts-node-inspect": "node --inspect-brk node_modules/ts-node/dist/bin.js",
     "generate": "ts-node src/Capas/2@Async/things/directories/generate.ts",
     "random-inspect": "yarn ts-node-inspect -- src/Capas/2@Async/things/directories/generate.ts",
-    "finder": "ts-node src/Capas/2@Async/10-async.examples.ts"
+    "finder": "ts-node src/Capas/2@Async/10-async.examples.ts",
+    "compile": "rimraf build && tsc"
   },
   "dependencies": {
     "@types/angular-animate": "^1.5.9",

@@ -9,6 +9,7 @@
         "sourceMap": false,
         "experimentalDecorators": true,
         "noEmitOnError": true,
+        "outDir": "./build",
         "declaration": false,
         "typeRoots": [
             "node_modules/@types"
@@ -24,7 +25,10 @@
     "exclude": [
         "node_modules",
         "build",
-        "compilation"
+        "compilation",
+        "src/menu",
+        "src/mw",
+        "src/**/site"
     ],
     "filesGlob": [
         "src/**/*.ts"
