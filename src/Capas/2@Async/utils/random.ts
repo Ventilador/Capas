@@ -23,8 +23,15 @@ export function generateName(withExt) {
     return nameGenerator.generate(withExt ? 'txt' : '');
 }
 
-const text = readFileSync(__dirname + '\\lorem.txt', 'utf-8').split(/\r?\n/).filter(Boolean);
-export function getLoremLine() {
+const text = readFileSync(process.cwd() + '\\lorem.txt', 'utf-8').split(/\r?\n/).filter(Boolean);
+export function getLoremLine(amount?) {
+    if (amount) {
+        let arr = [];
+        for (let i = 0; i < amount; i++) {
+            arr.push(text[random(text.length)]);
+        }
+        return arr.join('\r\n');
+    }
     return text[random(text.length)];
 }
 
