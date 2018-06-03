@@ -59,9 +59,10 @@ function onError(err) {
     throw err;
 }
 
-function onDone() {
+function onDone(val) {
     working--;
     if (queue.length) {
         proceessFn(queue.pop());
     }
+    return val;
 }
