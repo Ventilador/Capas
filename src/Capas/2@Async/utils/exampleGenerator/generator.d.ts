@@ -4,5 +4,5 @@ interface IExample {
     size: number[];
     fileSize?: number[];
     hardText?: string;
-    mode?: string;
+    streamed?: boolean;
 }

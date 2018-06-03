@@ -1,18 +1,21 @@
 {
-  "name": "AsyncSpace",
+  "name": "capas",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "ts-node node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --progress --config ./compilation/build.ts",
     "mw": "node ./backend/index.js",
-    "promises-spec": "ts-node node_modules/jasmine/bin/jasmine.js src/Capas/2@Async/5-promises-spec.ts",
-    "async-spec": "ts-node node_modules/jasmine/bin/jasmine.js src/Capas/2@Async/8-async-await-spec.ts",
-    "ts-node-inspect": "node --inspect-brk node_modules/ts-node/dist/bin.js",
-    "generate": "ts-node src/Capas/2@Async/things/directories/generate.ts",
-    "random-inspect": "yarn ts-node-inspect -- src/Capas/2@Async/things/directories/generate.ts",
-    "finder": "ts-node --max_old_space_size=256 src/Capas/2@Async/10-async.examples.ts",
-    "compile": "rimraf build && tsc"
+    "promises-spec": "node node_modules/jasmine/bin/jasmine.js src/Capas/2@Async/5-promises-spec.js",
+    "async-spec": "node node_modules/jasmine/bin/jasmine.js src/Capas/2@Async/8-async-await-spec.js",
+    "generate": "node build/Capas/2@Async/things/directories/generate.js",
+    "random-inspect": "node --inspect-brk build/Capas/2@Async/things/directories/generate.js",
+    "finder": "node --max_old_space_size=256 src/Capas/2@Async/10-async.examples.js",
+    "finder:1": "yarn finder example-1",
+    "finder:2": "yarn finder example-2",
+    "finder:3": "yarn finder example-3",
+    "finder:4": "yarn finder example-4",
+    "tsc": "rimraf build && tsc"
   },
   "dependencies": {
     "@types/angular-animate": "^1.5.9",

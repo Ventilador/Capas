@@ -10,7 +10,7 @@ import { writeFile, createWriteStream } from "fs";
 export function generateFile(path: string, options: IExample) {
     path = resolve(path, generateName(true));
     const deferred = defer();
-    if (options.mode === 'streamed') {
+    if (options.streamed) {
         return put(
             writeStream(path, options, deferred.resolve, deferred.reject),
             deferred.promise);
