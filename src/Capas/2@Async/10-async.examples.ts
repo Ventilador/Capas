@@ -1,13 +1,14 @@
 import { exists, readDir, readFile, stats } from './things/functions';
 import { resolve, basename } from 'path';
 import defer from './utils/defer';
-import { put, concurrency } from './utils/exampleGenerator/fsQueue';
+import { put, concurrency, shouldWait } from './utils/exampleGenerator/fsQueue';
 concurrency(100);
 function findInFiles(dir: string, content: string) {
     return finder(dir, content.toLowerCase(), []);
 }
 
 async function finder(path: string, content: string, found: string[]) {
+    await shouldWait();
     const stat = await stats(path);
     if (stat.isFile()) {
         const text = await secureReadFile(path);

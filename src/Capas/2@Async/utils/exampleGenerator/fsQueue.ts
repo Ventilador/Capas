@@ -1,3 +1,5 @@
+import defer from "../defer";
+
 const queue = {
     length: 0,
     first: null,
@@ -29,10 +31,23 @@ const queue = {
 };
 (global as any).queue = queue;
 (global as any).onDone = onDone;
+
 let MAX = 100;
 export function concurrency(amount) {
     MAX = amount;
 }
+let r = true ? undefined : defer();
+let waiter: typeof r;
+export function shouldWait() {
+    if (waiter) {
+        return waiter;
+    }
+    if (!queue.length) {
+        return true;
+    }
+    return waiter = defer();
+}
+
 let working = 0;
 export function put(cb, promise) {
     if (working < MAX) {
@@ -56,6 +71,10 @@ function onError(err) {
     if (queue.length) {
         proceessFn(queue.pop());
     }
+    if (!queue.length && waiter) {
+        waiter.resolve();
+        waiter = null;
+    }
     throw err;
 }
 
@@ -63,6 +82,10 @@ function onDone(val) {
     working--;
     if (queue.length) {
         proceessFn(queue.pop());
+    }
+    if (!queue.length && waiter) {
+        waiter.resolve();
+        waiter = null;
     }
     return val;
 }
