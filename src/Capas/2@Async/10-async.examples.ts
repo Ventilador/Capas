@@ -1,25 +1,42 @@
 import { exists, readDir, readFile, stats } from './things/functions';
 import { resolve, basename } from 'path';
 import defer from './utils/defer';
-import { put, concurrency, shouldWait } from './utils/exampleGenerator/fsQueue';
+import { put, concurrency } from './utils/exampleGenerator/fsQueue';
 concurrency(100);
 function findInFiles(dir: string, content: string) {
     return finder(dir, content.toLowerCase(), []);
 }
 
 async function finder(path: string, content: string, found: string[]) {
-    await shouldWait();
-    const stat = await stats(path);
+    const stat = await secureStats(path);
     if (stat.isFile()) {
         const text = await secureReadFile(path);
         if (text.includes(content)) {
             found.push(path);
         }
     } else {
-        const dirContent = await readDir(path);
-        await Promise.all(dirContent.map(async cur => await finder(cur, content, found)));
+        const dirContent = await secureReadDir(path);
+        await Promise.all(dirContent.map(async cur => {
+            return finder(cur, content, found)
+        }));
     }
     return found;
+}
+
+function secureReadDir(path) {
+    const deferred = defer();
+    return put(function () {
+        return readDir(path)
+            .then(deferred.resolve, deferred.reject);
+    }, deferred.promise);
+}
+
+function secureStats(path) {
+    const deferred = defer();
+    return put(function () {
+        return stats(path)
+            .then(deferred.resolve, deferred.reject);
+    }, deferred.promise);
 }
 
 function secureReadFile(path) {
