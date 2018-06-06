@@ -9,18 +9,26 @@ function findInFiles(dir: string, content: string) {
 }
 
 async function finder(path: string, content: string, found: string[]) {
-    const stat = await secureStats(path);
-    if (stat.isFile()) {
-        if (await processFile(path, stat, chunk => chunk.toLowerCase().indexOf(content) !== -1)) {
-            found.push(path);
-        }
-    } else {
-        const dirContent = await secureReadDir(path);
-        await Promise.all(dirContent.map(cur => {
-            return finder(cur, content, found)
-        }));
-    }
-    return found;
+    return secureStats(path)
+        .then(stat => {
+            if (stat.isFile()) {
+                return processFile(path, stat, chunk => chunk.toLowerCase().indexOf(content) !== -1)
+                    .then(containsContent => {
+                        if (containsContent) {
+                            found.push(path);
+                        }
+                        return found;
+                    })
+            } else {
+                return secureReadDir(path)
+                    .then(dirContent => {
+                        return Promise.all(dirContent.map(cur => {
+                            return finder(cur, content, found)
+                        }));
+                    })
+                    .then(_ => found);
+            }
+        });
 }
 
 function secureReadDir(path) {
