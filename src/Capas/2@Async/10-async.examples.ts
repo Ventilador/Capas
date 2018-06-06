@@ -1,7 +1,7 @@
 import { exists, readDir, readFile, stats } from './things/functions';
 import { resolve, basename } from 'path';
 import defer from './utils/defer';
-import { put, concurrency } from './utils/exampleGenerator/fsQueue';
+import { put, concurrency, putFirst } from './utils/exampleGenerator/fsQueue';
 concurrency(100);
 function findInFiles(dir: string, content: string) {
     return finder(dir, content.toLowerCase(), []);
@@ -41,7 +41,7 @@ function secureStats(path) {
 
 function secureReadFile(path) {
     const deferred = defer();
-    return put(function () {
+    return putFirst(function () {
         return readFile(path)
             .then(deferred.resolve, deferred.reject);
     }, deferred.promise);
