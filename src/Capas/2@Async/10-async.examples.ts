@@ -1,7 +1,7 @@
 import { exists, readDir, readFile, stats } from './things/functions';
 import { resolve, basename } from 'path';
 import defer from './utils/defer';
-import { createReadStream } from 'fs';
+import { createReadStream, Stats } from 'fs';
 import { put, concurrency, putFirst } from './utils/exampleGenerator/fsQueue';
 concurrency(100);
 function findInFiles(dir: string, content: string) {
@@ -11,7 +11,7 @@ function findInFiles(dir: string, content: string) {
 async function finder(path: string, content: string, found: string[]) {
     const stat = await secureStats(path);
     if (stat.isFile()) {
-        if (await processFile(path, chunk => chunk.toLowerCase().indexOf(content) !== -1)) {
+        if (await processFile(path, stat, chunk => chunk.toLowerCase().indexOf(content) !== -1)) {
             found.push(path);
         }
     } else {
@@ -39,11 +39,14 @@ function secureStats(path) {
     }, deferred.promise);
 }
 
-function processFile(path, matcher) {
+function processFile(path, stat: Stats, matcher) {
     const deferred = defer();
     return putFirst(function () {
         let found = false;
-        createReadStream(path)
+        createReadStream(path, {
+            start: 0,
+            end: stat.size
+        })
             .on('data', function (chunk: Buffer) {
                 if (found = matcher(chunk.toString())) {
                     this.close();
