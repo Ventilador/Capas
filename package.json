@@ -10,7 +10,7 @@
     "async-spec": "node node_modules/jasmine/bin/jasmine.js src/Capas/2@Async/8-async-await-spec.js",
     "generate": "node build/Capas/2@Async/things/directories/generate.js",
     "random-inspect": "node --inspect-brk build/Capas/2@Async/things/directories/generate.js",
-    "finder": "node --max_old_space_size=256 src/Capas/2@Async/10-async.examples.js",
+    "finder": "node --max_old_space_size=256 build/Capas/2@Async/10-async.examples.js",
     "finder:1": "yarn finder example-1",
     "finder:2": "yarn finder example-2",
     "finder:3": "yarn finder example-3",
