@@ -3,7 +3,7 @@ import { random, flipCoin, generateName } from "../random";
 import { generateFile } from "./generateFile";
 import { resolve } from "path";
 import { sleep } from "../Sleep";
-import { put } from "./fsQueue";
+import { putDir } from "./fsQueue";
 import defer from "../defer";
 
 
@@ -41,7 +41,7 @@ export function generateFolder(path: string, options: IExample, depth: number) {
 
 function makeDirQueued(path) {
     const deferred = defer();
-    return put(function () {
+    return putDir(function () {
         mkdir(path).then(deferred.resolve, deferred.resolve);
     }, deferred.promise);
 }

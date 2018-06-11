@@ -7,7 +7,6 @@ export class Queue {
     public length = 0;
     private first: QueueItem;
     private last: QueueItem;
-    private short: QueueItem;
     public put(val: any) {
         if (!this.length) {
             this.first = this.last = {
@@ -22,78 +21,71 @@ export class Queue {
         }
         this.length++;
     }
-    public putFirst(val: any) {
-        this.length++;
-        this.short = {
-            value: val,
-            next: this.short
-        }
-    }
     public take() {
-        this.length--;
-        let val;
-        if (this.short) {
-            val = this.short.value;
-            this.short = this.short.next;
-            return val;
-        } else {
-            val = this.first.value;
+        if (this.first) {
+            const val = this.first.value;
             this.first = this.first.next;
+            this.length--;
+            if (this.length < 1) {
+                this.length = 0;
+                this.first = this.last = null;
+            }
+            return val;
         }
-        if (this.length < 1) {
-            this.length = 0;
-            this.first = this.last = null;
-        }
-        return val;
+
     }
 }
-const queue = new Queue();
-
-(global as any).queue = queue;
+const fileQueue = new Queue();
+const dirQueue = new Queue();
+(global as any).queue = fileQueue;
 (global as any).onDone = onDone;
 let MAX = 100;
+let MAX_DIR = 3;
 export function concurrency(amount) {
     MAX = amount;
 }
-let working = 0;
-export function put(cb, promise) {
-    if (working < MAX) {
+let working_files = 0;
+let working_directories = 0;
+export function putDir(cb, promise) {
+    if (fileQueue.length < 10) {
+        setImmediate(cb);
+    } else {
+        dirQueue.put(cb);
+    }
+    return promise;
+}
+
+export function putFile(cb, promise) {
+    if (working_files < MAX) {
         proceessFn(cb);
     } else {
-        queue.put(cb);
+        fileQueue.put(cb);
     }
     return promise.then(onDone, onError);
 }
-
-export function putFirst(cb, promise) {
-    if (working < MAX) {
-        proceessFn(cb);
-    } else {
-        queue.putFirst(cb);
-    }
-    return promise.then(onDone, onError);
-}
-
 
 function proceessFn(cb) {
-    working++;
-    // console.log(queue.length);
+    working_files++;
     setImmediate(cb);
+}
+
+function registerNextTick() {
+    working_files--;
+    if (fileQueue.length) {
+        proceessFn(fileQueue.take());
+    }
+    if (fileQueue.length < 10 && dirQueue.length) {
+        setImmediate(dirQueue.take());
+    }
 }
 
 
 function onError(err) {
-    working--;
-    if (queue.length) {
-        proceessFn(queue.take());
-    }
+    registerNextTick();
     throw err;
 }
 
 function onDone(val) {
-    working--;
-    if (queue.length) {
-        proceessFn(queue.take());
-    }
+    registerNextTick();
     return val;
 }

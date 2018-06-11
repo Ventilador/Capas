@@ -1,7 +1,7 @@
 import { random, getLoremLine, generateName } from "../random";
 import { Writer } from "../../things/functions/writer";
 import { resolve } from "path";
-import { put } from "./fsQueue";
+import { putDir } from "./fsQueue";
 import defer from "../defer";
 import { writeFile, createWriteStream } from "fs";
 
@@ -11,11 +11,11 @@ export function generateFile(path: string, options: IExample) {
     path = resolve(path, generateName(true));
     const deferred = defer();
     if (options.streamed) {
-        return put(
+        return putDir(
             writeStream(path, options, deferred.resolve, deferred.reject),
             deferred.promise);
     }
-    return put(
+    return putDir(
         generateText(path, options, deferred.resolve, deferred.reject),
         deferred.promise);
 }
